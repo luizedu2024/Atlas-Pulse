@@ -1,4 +1,6 @@
 from django.contrib import admin
-from .models import TelemetryPoint
+
+from telemetry.models import TelemetryPoint
+
 
 admin.site.register(TelemetryPoint)

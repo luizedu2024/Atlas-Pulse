@@ -1,26 +1,44 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
 
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError("The email must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_email_verified", True)
+        return self._create_user(email, password, **extra_fields)
+
+
 class User(AbstractUser):
-    class Role(models.TextChoices):
-        ADMIN = "admin", "Administrator"
-        ENGINEER = "engineer", "Engineer"
-        OPERATOR = "operator", "Operator"
-        VIEWER = "viewer", "Viewer"
-
+    username = None
     email = models.EmailField(unique=True)
-    organization = models.ForeignKey(
-        "organizations.Organization",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="users",
-    )
-    role = models.CharField(max_length=30, choices=Role.choices, default=Role.VIEWER)
+    full_name = models.CharField(max_length=150)
+    timezone = models.CharField(max_length=64, default="UTC")
+    language = models.CharField(max_length=16, default="en")
+    is_email_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    def can_manage(self):
-        return self.role == self.Role.ADMIN
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    objects = UserManager()
 
-    def can_operate(self):
-        return self.role in {self.Role.ADMIN, self.Role.ENGINEER, self.Role.OPERATOR}
+    def __str__(self):
+        return self.email

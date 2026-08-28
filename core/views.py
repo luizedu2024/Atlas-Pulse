@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -13,19 +14,31 @@ from telemetry.models import TelemetryPoint
 
 
 def home(request):
-    return redirect("dashboard" if request.user.is_authenticated else "login")
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    return render(request, "core/landing.html")
+
+
+def csrf_failure(request, reason=""):
+    messages.error(request, "Your session token expired. Please try again.")
+    return redirect("login")
 
 
 @login_required
 def dashboard(request):
-    org = request.user.organization
-    devices = Device.objects.filter(organization=org).select_related("gateway")
-    gateways = Gateway.objects.filter(organization=org)
-    alerts = AlertEvent.objects.filter(device__organization=org).select_related("device", "alert_rule")
+    if not request.user.is_email_verified:
+        return redirect("verify_email_required")
+    if not request.organization:
+        return redirect("onboarding")
+    devices = Device.objects.filter(organization=request.organization).select_related("gateway")
+    gateways = Gateway.objects.filter(organization=request.organization)
+    alerts = AlertEvent.objects.filter(device__organization=request.organization).select_related("device", "alert_rule")
     since = timezone.now() - timedelta(hours=24)
-    points = TelemetryPoint.objects.filter(organization=org, timestamp__gte=since).order_by("timestamp")
-    chart_labels = [p.timestamp.strftime("%H:%M") for p in points if p.metric == "temperature"][-24:]
-    chart_values = [p.value for p in points if p.metric == "temperature"][-24:]
+    temperature = TelemetryPoint.objects.filter(
+        organization=request.organization,
+        metric="temperature",
+        timestamp__gte=since,
+    ).order_by("timestamp")
     context = {
         "devices_online": devices.filter(status="online").count(),
         "devices_offline": devices.filter(status="offline").count(),
@@ -33,8 +46,8 @@ def dashboard(request):
         "active_alerts": alerts.filter(status="active").count(),
         "device_status": devices.values("status").annotate(total=Count("id")),
         "recent_alerts": alerts[:6],
-        "latest_activity": AuditLog.objects.filter(organization=org)[:8],
-        "chart_labels": chart_labels,
-        "chart_values": chart_values,
+        "latest_activity": AuditLog.objects.filter(organization=request.organization)[:8],
+        "chart_labels": [p.timestamp.strftime("%H:%M") for p in temperature][-32:],
+        "chart_values": [p.value for p in temperature][-32:],
     }
     return render(request, "core/dashboard.html", context)

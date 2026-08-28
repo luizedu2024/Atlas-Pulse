@@ -1,12 +1,11 @@
-from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import AlertEventViewSet, AlertRuleViewSet, DeviceViewSet, GatewayViewSet
+from api.views import AlertEventViewSet, AlertRuleViewSet, DeviceViewSet, GatewayViewSet
 
 router = DefaultRouter()
-router.register("devices", DeviceViewSet, basename="device")
-router.register("gateways", GatewayViewSet, basename="gateway")
-router.register("alert-rules", AlertRuleViewSet, basename="alert-rule")
-router.register("alerts", AlertEventViewSet, basename="alert")
+router.register("devices", DeviceViewSet)
+router.register("gateways", GatewayViewSet)
+router.register("alert-rules", AlertRuleViewSet)
+router.register("alerts", AlertEventViewSet)
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = router.urls

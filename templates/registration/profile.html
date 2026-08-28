@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Profile</h1>
+<form method="post" class="panel form">{% csrf_token %}{{ form.as_p }}<button class="primary">Save profile</button></form>
+<section class="panel">
+  <h2>Delete account</h2>
+  {% if delete_blocked %}<p>Your account is the only administrator of at least one organization. Transfer ownership or remove the organization first.</p>{% else %}<button class="danger" disabled>Delete account</button>{% endif %}
+</section>
+{% endblock %}

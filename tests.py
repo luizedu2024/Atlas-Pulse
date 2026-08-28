@@ -6,7 +6,7 @@ from django.utils import timezone
 from alerts.models import AlertEvent, AlertRule
 from core.services.telemetry import TelemetryService
 from devices.models import Device
-from organizations.models import Organization
+from organizations.models import Organization, OrganizationMembership
 
 
 @pytest.fixture
@@ -17,13 +17,14 @@ def org(db):
 @pytest.fixture
 def user(org):
     User = get_user_model()
-    return User.objects.create_user(
-        username="admin",
+    user = User.objects.create_user(
         email="admin@example.com",
         password="pass",
-        organization=org,
-        role="admin",
+        full_name="Admin User",
+        is_email_verified=True,
     )
+    OrganizationMembership.objects.create(user=user, organization=org, role="admin")
+    return user
 
 
 @pytest.mark.django_db

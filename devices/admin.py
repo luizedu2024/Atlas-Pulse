@@ -1,4 +1,6 @@
 from django.contrib import admin
-from .models import Device
+
+from devices.models import Device
+
 
 admin.site.register(Device)

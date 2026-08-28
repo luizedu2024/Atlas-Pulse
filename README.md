@@ -2,38 +2,38 @@
 
 Atlas Pulse is an open-source Industrial IoT platform designed to connect devices, machines and edge gateways to the cloud, enabling telemetry, monitoring, alerts, automation and remote management.
 
+## Architecture
+
 ```text
 Machine
-  |
-Edge
-  |
-MQTT
-  |
-Atlas Pulse
-  |
-Telemetry
-  |
-Alerts / Automation / Dashboard
+  -> Edge Gateway
+  -> MQTT / REST
+  -> Atlas Pulse
+  -> Telemetry Storage
+  -> Alerts / Automation / Dashboard
 ```
 
-## MVP
+The project is built as a Django multi-tenant application. Public identity is separate from private organizations:
 
-- Login, logout and password reset views
-- Custom user model with organization and role
-- Multi-tenant organizations
-- Devices, gateways, telemetry, alerts, automations, dashboards and audit models
-- Django templates dashboard with Chart.js telemetry
-- REST API under `/api/v1/`
-- MQTT ingestion skeleton using `paho-mqtt`
-- Docker Compose with PostgreSQL, Redis, Mosquitto, Celery and Celery Beat
-- Demo seed command
+```text
+Public Identity + Private Organizations + Isolated Industrial Data
+```
 
-## Installation
+Users can register publicly, verify their email, create an organization, accept invitations and switch between organizations. Devices, gateways, telemetry, alerts and automations are always scoped to the active organization.
+
+## Stack
+
+- Django, Django REST Framework, Channels
+- PostgreSQL, Redis, Celery, Celery Beat
+- Mosquitto MQTT broker
+- Django templates, CSS, JavaScript and Chart.js
+- django-axes for login brute-force protection
+- JWT API authentication via Simple JWT
+
+## Local Setup
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_demo
 python manage.py runserver
@@ -41,11 +41,11 @@ python manage.py runserver
 
 Open `http://localhost:8000`.
 
-Demo credentials:
+Demo login:
 
 ```text
-username: admin
-password: admin123
+admin@atlaspulse.local
+admin12345
 ```
 
 ## Docker
@@ -54,46 +54,86 @@ password: admin123
 docker compose up --build
 ```
 
-The web app is available at `http://localhost:8000`. Anonymous users are redirected to `/login/`; authenticated users land on `/dashboard/`.
+Then run migrations and seed data in another terminal:
+
+```bash
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py seed_demo
+```
+
+## Public Auth Flow
+
+```text
+Visitor -> Register -> Verify Email -> Login -> Onboarding -> Create Organization -> Dashboard
+```
+
+Invitation flow:
+
+```text
+Invite Link -> Register or Login -> Verify Email -> Accept Invitation -> Dashboard
+```
+
+Routes:
+
+- `/` public landing page
+- `/register/` public registration
+- `/login/` login
+- `/verify-email/<token>/` email verification
+- `/verify-email-required/`
+- `/onboarding/`
+- `/organizations/create/`
+- `/organizations/invite/`
+- `/profile/`
+- `/password-reset/`
+
+## API
+
+REST API prefix:
+
+```text
+/api/v1/
+```
+
+JWT:
+
+```text
+POST /api/v1/auth/token/
+POST /api/v1/auth/token/refresh/
+```
+
+Resources:
+
+```text
+GET /api/v1/devices/
+GET /api/v1/devices/<id>/
+GET /api/v1/devices/<id>/telemetry/
+POST /api/v1/devices/<id>/commands/
+GET /api/v1/gateways/
+GET /api/v1/alerts/
+GET /api/v1/alert-rules/
+```
 
 ## MQTT Test
 
 ```bash
 mosquitto_pub \
-  -h localhost \
   -t atlas/demo/motor-001/telemetry \
-  -m '{
-    "metrics": {
-      "temperature": {
-        "value": 75,
-        "unit": "C"
-      }
-    }
-  }'
+  -m '{"metrics":{"temperature":{"value":75,"unit":"C"}}}'
 ```
 
-Run the consumer with:
-
-```bash
-python manage.py mqtt_consumer
-```
-
-## REST API
-
-Examples:
+Default topic:
 
 ```text
-GET  /api/v1/devices/
-GET  /api/v1/devices/<id>/
-GET  /api/v1/devices/<id>/telemetry/
-GET  /api/v1/gateways/
-GET  /api/v1/alerts/
-POST /api/v1/devices/<id>/commands/
+atlas/{organization}/{device}/telemetry
 ```
 
-Authentication currently supports Django sessions and DRF tokens. The architecture leaves room for JWT, API keys, device tokens and X.509 certificates.
+## Tests
 
-## Second Phase
+```bash
+python -m pytest -q
+```
 
-Documented but not implemented yet: OPC-UA, Modbus TCP, Modbus RTU, LoRaWAN, BACnet, SNMP, edge buffering, OTA firmware updates, device provisioning, X.509 certificates, digital twins, geolocation maps, Grafana, Prometheus, TimescaleDB, AWS IoT Core, Azure IoT, GCP IoT integrations, AI anomaly detection and predictive maintenance.
+## Future Phase
+
+Documented future extensions include OPC-UA, Modbus TCP/RTU, LoRaWAN, BACnet, SNMP, edge buffering, OTA firmware updates, X.509 certificates, digital twins, Grafana, Prometheus, TimescaleDB and AI anomaly detection.
 

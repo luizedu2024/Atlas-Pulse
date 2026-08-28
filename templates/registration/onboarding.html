@@ -1,0 +1,7 @@
+{% extends "auth_base.html" %}
+{% block content %}
+<h2>Welcome to Atlas Pulse</h2>
+<p>What would you like to do?</p>
+<a class="button primary wide" href="{% url 'organization_create' %}">Create an Organization</a>
+<p class="muted">Join with an Invitation by opening the invitation link you received.</p>
+{% endblock %}

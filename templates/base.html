@@ -4,39 +4,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Atlas Pulse{% endblock %}</title>
+  <title>Atlas Pulse</title>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="shell">
-    <aside class="sidebar">
-      <div class="brand">Atlas Pulse<span>Industrial IoT. Connected.</span></div>
-      <nav>
-        <a href="{% url 'dashboard' %}">Overview</a>
-        <a href="{% url 'device_list' %}">Devices</a>
-        <a href="#">Gateways</a>
-        <a href="#">Telemetry</a>
-        <a href="{% url 'alert_list' %}">Alerts</a>
-        <a href="#">Automations</a>
-        <a href="#">Dashboards</a>
-        <a href="#">Integrations</a>
-        <a href="#">Users</a>
-        <a href="#">Settings</a>
-      </nav>
-      <footer>Open Source Industrial IoT</footer>
-    </aside>
-    <main>
-      <header class="topbar">
-        <strong>{{ request.user.organization.name|default:"No organization" }}</strong>
-        <div class="top-actions">
-          <span>Notifications</span>
-          <span>{{ request.user.email|default:request.user.username }}</span>
-          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Logout</button></form>
-        </div>
-      </header>
-      <section class="content">{% block content %}{% endblock %}</section>
-    </main>
-  </div>
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'dashboard' %}">Atlas Pulse</a>
+    <nav>
+      <a href="{% url 'dashboard' %}">Overview</a>
+      <a href="{% url 'device_list' %}">Devices</a>
+      <a href="{% url 'alert_list' %}">Alerts</a>
+      <a href="{% url 'invite_user' %}">Users</a>
+      <a href="{% url 'profile' %}">Settings</a>
+    </nav>
+    <small>Open Source Industrial IoT</small>
+  </aside>
+  <main class="shell">
+    <header class="topbar">
+      {% if request.organization %}
+        <details class="org-switcher">
+          <summary>{{ request.organization.name }}</summary>
+          <div>
+            {% for org in request.organizations %}
+              <a href="{% url 'organization_switch' org.id %}">{{ org.name }}</a>
+            {% endfor %}
+            <a href="{% url 'organization_create' %}">+ Create Organization</a>
+          </div>
+        </details>
+      {% endif %}
+      <span class="spacer"></span>
+      <a href="{% url 'profile' %}">{{ request.user.full_name|default:request.user.email }}</a>
+      <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button>Logout</button></form>
+    </header>
+    {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
 </body>
 </html>

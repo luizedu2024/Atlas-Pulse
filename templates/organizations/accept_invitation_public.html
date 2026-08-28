@@ -1,0 +1,7 @@
+{% extends "auth_base.html" %}
+{% block content %}
+<h2>Join {{ invitation.organization.name }}</h2>
+<p>This invitation was sent to {{ invitation.email }}.</p>
+<a class="button primary wide" href="{% url 'register' %}?invitation={{ token }}">Create account and accept invitation</a>
+<a class="button wide" href="{% url 'login' %}">Sign in to accept</a>
+{% endblock %}

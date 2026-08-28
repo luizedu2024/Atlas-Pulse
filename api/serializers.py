@@ -36,8 +36,6 @@ class AlertRuleSerializer(serializers.ModelSerializer):
 
 
 class AlertEventSerializer(serializers.ModelSerializer):
-    device_name = serializers.CharField(source="device.name", read_only=True)
-
     class Meta:
         model = AlertEvent
         fields = "__all__"
@@ -47,4 +45,4 @@ class DeviceCommandSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceCommand
         fields = "__all__"
-        read_only_fields = ["requested_by", "requested_at", "sent_at", "completed_at", "response"]
+        read_only_fields = ["requested_by"]
