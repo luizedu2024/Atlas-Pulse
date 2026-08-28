@@ -1,0 +1,42 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Atlas Pulse{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">Atlas Pulse<span>Industrial IoT. Connected.</span></div>
+      <nav>
+        <a href="{% url 'dashboard' %}">Overview</a>
+        <a href="{% url 'device_list' %}">Devices</a>
+        <a href="#">Gateways</a>
+        <a href="#">Telemetry</a>
+        <a href="{% url 'alert_list' %}">Alerts</a>
+        <a href="#">Automations</a>
+        <a href="#">Dashboards</a>
+        <a href="#">Integrations</a>
+        <a href="#">Users</a>
+        <a href="#">Settings</a>
+      </nav>
+      <footer>Open Source Industrial IoT</footer>
+    </aside>
+    <main>
+      <header class="topbar">
+        <strong>{{ request.user.organization.name|default:"No organization" }}</strong>
+        <div class="top-actions">
+          <span>Notifications</span>
+          <span>{{ request.user.email|default:request.user.username }}</span>
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Logout</button></form>
+        </div>
+      </header>
+      <section class="content">{% block content %}{% endblock %}</section>
+    </main>
+  </div>
+</body>
+</html>

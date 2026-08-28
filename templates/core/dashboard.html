@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Atlas Pulse{% endblock %}
+{% block content %}
+<h1>Operations Overview</h1>
+<div class="metric-grid">
+  <article><strong>{{ devices_online }}</strong><span>Devices Online</span></article>
+  <article><strong>{{ devices_offline }}</strong><span>Devices Offline</span></article>
+  <article><strong>{{ gateways_online }}</strong><span>Gateways Online</span></article>
+  <article><strong>{{ active_alerts }}</strong><span>Active Alerts</span></article>
+</div>
+<div class="dashboard-grid">
+  <section class="panel chart-panel"><h2>Telemetry - Last 24 hours</h2><canvas id="telemetryChart"></canvas></section>
+  <section class="panel"><h2>Device Status</h2>{% for row in device_status %}<div class="row"><span>{{ row.status|title }}</span><strong>{{ row.total }}</strong></div>{% empty %}<p>No devices yet.</p>{% endfor %}</section>
+  <section class="panel"><h2>Recent Alerts</h2>{% for alert in recent_alerts %}<div class="alert {{ alert.severity }}"><span>{{ alert.severity|title }}</span><p>{{ alert.message }}</p></div>{% empty %}<p>No recent alerts.</p>{% endfor %}</section>
+  <section class="panel"><h2>Latest Activity</h2>{% for item in latest_activity %}<div class="row"><span>{{ item.action }}</span><small>{{ item.timestamp|timesince }} ago</small></div>{% empty %}<p>No activity.</p>{% endfor %}</section>
+</div>
+{{ chart_labels|json_script:"chart-labels" }}
+{{ chart_values|json_script:"chart-values" }}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

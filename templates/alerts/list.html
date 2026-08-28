@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Alerts</h1>
+<div class="metric-grid"><article><strong>{{ critical }}</strong><span>Critical</span></article><article><strong>{{ warning }}</strong><span>Warning</span></article><article><strong>{{ info }}</strong><span>Info</span></article></div>
+<section class="panel table-panel"><table><thead><tr><th>Severity</th><th>Device</th><th>Message</th><th>Value</th><th>Triggered</th><th>Status</th></tr></thead><tbody>
+{% for event in events %}<tr><td><span class="pill {{ event.severity }}">{{ event.severity }}</span></td><td>{{ event.device.name }}</td><td>{{ event.message }}</td><td>{{ event.value }}</td><td>{{ event.triggered_at|timesince }} ago</td><td>{{ event.status }}</td></tr>{% empty %}<tr><td colspan="6">No alerts found.</td></tr>{% endfor %}
+</tbody></table></section>
+{% endblock %}

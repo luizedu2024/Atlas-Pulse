@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Pulse Login</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="login-screen">
+  <div class="network-grid"></div>
+  <section class="login-card">
+    <h1>ATLAS PULSE</h1>
+    <p>Industrial IoT Platform</p>
+    <span>From Edge to Insight.</span>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label>Email or username {{ form.username }}</label>
+      <label>Password {{ form.password }}</label>
+      <div class="login-row"><label><input type="checkbox" name="remember"> Remember me</label><a href="{% url 'password_reset' %}">Forgot password?</a></div>
+      <button class="primary">SIGN IN</button>
+    </form>
+  </section>
+</body>
+</html>
