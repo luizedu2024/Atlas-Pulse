@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ device.name }}</h1>
+<p><span class="status {{ device.status }}">{{ device.status }}</span> {{ device.protocol }} Last seen {{ device.last_seen|default:"never" }}</p>
+<section class="tabs"><span>Overview</span><span>Telemetry</span><span>Alerts</span><span>Commands</span><span>Configuration</span><span>Logs</span></section>
+<section class="grid-two"><article class="panel"><h2>Device Information</h2><p>ID {{ device.device_id }}</p><p>Firmware {{ device.firmware_version }}</p><p>Location {{ device.location }}</p></article><article class="panel"><h2>Connection</h2><p>Gateway {{ device.gateway|default:"-" }}</p><p>IP {{ device.ip_address|default:"-" }}</p></article></section>
+<section class="panel"><h2>Telemetry</h2><table><tr><th>Metric</th><th>Value</th><th>Time</th></tr>{% for point in telemetry %}<tr><td>{{ point.metric }}</td><td>{{ point.value }} {{ point.unit }}</td><td>{{ point.timestamp }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

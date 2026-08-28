@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Invite Users</h1>
+<form method="post" class="panel form">{% csrf_token %}{{ form.as_p }}<button class="primary">Create Invitation</button></form>
+<section class="panel"><h2>Recent invitations</h2><table><tr><th>Email</th><th>Role</th><th>Status</th><th>Expires</th></tr>{% for invite in invitations %}<tr><td>{{ invite.email }}</td><td>{{ invite.role }}</td><td>{{ invite.status }}</td><td>{{ invite.expires_at }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

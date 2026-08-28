@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Pulse</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="landing">
+  <main>
+    <p class="eyebrow">Open-source Industrial IoT Platform</p>
+    <h1>Atlas Pulse</h1>
+    <p>Connect devices. Monitor telemetry. Automate operations.</p>
+    <div class="actions">
+      <a class="button primary" href="{% url 'register' %}">Get Started</a>
+      <a class="button" href="{% url 'login' %}">Sign In</a>
+      <a class="button" href="https://github.com/">GitHub</a>
+    </div>
+  </main>
+</body>
+</html>

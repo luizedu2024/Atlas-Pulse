@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Devices</h1>
+<form class="filters"><input name="q" placeholder="Search" value="{{ request.GET.q }}"><select name="status"><option value="">Status</option><option>online</option><option>offline</option><option>warning</option></select><button>Filter</button></form>
+<section class="panel"><table><tr><th>Device</th><th>Type</th><th>Status</th><th>Protocol</th><th>Gateway</th><th>Last Seen</th><th>Location</th></tr>{% for device in devices %}<tr><td><a href="{% url 'device_detail' device.id %}">{{ device.name }}</a></td><td>{{ device.device_type }}</td><td><span class="status {{ device.status }}">{{ device.status }}</span></td><td>{{ device.protocol }}</td><td>{{ device.gateway|default:"-" }}</td><td>{{ device.last_seen|default:"-" }}</td><td>{{ device.location }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

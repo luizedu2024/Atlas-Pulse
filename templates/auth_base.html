@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Pulse</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="auth-page">
+  <section class="auth-art">
+    <div class="pulse-grid"></div>
+    <h1>ATLAS PULSE</h1>
+    <p>Industrial IoT Platform</p>
+    <span>From Edge to Insight.</span>
+  </section>
+  <main class="auth-card">
+    {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

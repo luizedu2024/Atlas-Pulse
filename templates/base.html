@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Pulse</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'dashboard' %}">Atlas Pulse</a>
+    <nav>
+      <a href="{% url 'dashboard' %}">Overview</a>
+      <a href="{% url 'device_list' %}">Devices</a>
+      <a href="{% url 'alert_list' %}">Alerts</a>
+      <a href="{% url 'invite_user' %}">Users</a>
+      <a href="{% url 'profile' %}">Settings</a>
+    </nav>
+    <small>Open Source Industrial IoT</small>
+  </aside>
+  <main class="shell">
+    <header class="topbar">
+      {% if request.organization %}
+        <details class="org-switcher">
+          <summary>{{ request.organization.name }}</summary>
+          <div>
+            {% for org in request.organizations %}
+              <a href="{% url 'organization_switch' org.id %}">{{ org.name }}</a>
+            {% endfor %}
+            <a href="{% url 'organization_create' %}">+ Create Organization</a>
+          </div>
+        </details>
+      {% endif %}
+      <span class="spacer"></span>
+      <a href="{% url 'profile' %}">{{ request.user.full_name|default:request.user.email }}</a>
+      <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button>Logout</button></form>
+    </header>
+    {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

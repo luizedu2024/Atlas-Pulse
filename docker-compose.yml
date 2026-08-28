@@ -1,0 +1,59 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: dev-only-atlas-pulse-secret
+      DEBUG: "1"
+      DATABASE_URL: postgres://atlas:atlas@postgres:5432/atlas_pulse
+      REDIS_URL: redis://redis:6379/0
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+    depends_on:
+      - postgres
+      - redis
+      - mosquitto
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: atlas_pulse
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  celery:
+    build: .
+    command: celery -A atlas_pulse worker -l info
+    environment:
+      SECRET_KEY: dev-only-atlas-pulse-secret
+      DEBUG: "1"
+      DATABASE_URL: postgres://atlas:atlas@postgres:5432/atlas_pulse
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+      - postgres
+  celery-beat:
+    build: .
+    command: celery -A atlas_pulse beat -l info
+    environment:
+      SECRET_KEY: dev-only-atlas-pulse-secret
+      DEBUG: "1"
+      DATABASE_URL: postgres://atlas:atlas@postgres:5432/atlas_pulse
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+      - postgres
+volumes:
+  postgres_data:

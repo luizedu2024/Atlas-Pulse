@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Alerts</h1>
+<section class="metrics"><article><strong>{{ critical }}</strong><span>Critical</span></article><article><strong>{{ warning }}</strong><span>Warning</span></article><article><strong>{{ info }}</strong><span>Info</span></article></section>
+<section class="panel"><table><tr><th>Severity</th><th>Device</th><th>Message</th><th>Value</th><th>Triggered</th><th>Status</th></tr>{% for event in events %}<tr><td><span class="status {{ event.severity }}">{{ event.severity }}</span></td><td>{{ event.device }}</td><td>{{ event.message }}</td><td>{{ event.value }}</td><td>{{ event.triggered_at }}</td><td>{{ event.status }}</td></tr>{% endfor %}</table></section>
+{% endblock %}
