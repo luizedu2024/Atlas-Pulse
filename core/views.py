@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -16,6 +17,11 @@ def home(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
     return render(request, "core/landing.html")
+
+
+def csrf_failure(request, reason=""):
+    messages.error(request, "Your session token expired. Please try again.")
+    return redirect("login")
 
 
 @login_required

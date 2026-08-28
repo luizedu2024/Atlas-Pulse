@@ -88,6 +88,7 @@ LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
 AXES_FAILURE_LIMIT = int(os.getenv("AXES_FAILURE_LIMIT", "5"))
 AXES_COOLOFF_TIME = 1
+CSRF_FAILURE_VIEW = "core.views.csrf_failure"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
