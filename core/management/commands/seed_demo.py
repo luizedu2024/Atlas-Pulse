@@ -23,9 +23,11 @@ class Command(BaseCommand):
             email="admin@atlaspulse.local",
             defaults={"full_name": "Atlas Admin", "is_staff": True, "is_superuser": True, "is_email_verified": True},
         )
-        if created:
-            user.set_password("admin12345")
-            user.save()
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_email_verified = True
+        user.set_password("admin123")
+        user.save()
         OrganizationMembership.objects.get_or_create(user=user, organization=org, defaults={"role": "admin"})
         gateway, _ = Gateway.objects.get_or_create(
             organization=org,
@@ -68,4 +70,4 @@ class Command(BaseCommand):
             value=84.4,
             defaults={"severity": "critical", "message": "Temperature above 80C: temperature 84.4C > 80"},
         )
-        self.stdout.write(self.style.SUCCESS("Demo seeded. Login: admin@atlaspulse.local / admin12345"))
+        self.stdout.write(self.style.SUCCESS("Demo seeded. Login: admin / admin123 or admin@atlaspulse.local / admin123"))
