@@ -10,7 +10,10 @@
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="{% url 'dashboard' %}">Atlas Pulse</a>
+    <a class="brand" href="{% url 'dashboard' %}">
+      <img src="{% static 'img/atlas-pulse-logo.png' %}" alt="Atlas Pulse">
+      <span>Atlas Pulse</span>
+    </a>
     <nav>
       <a href="{% url 'dashboard' %}">Overview</a>
       <a href="{% url 'device_list' %}">Devices</a>
@@ -18,7 +21,7 @@
       <a href="{% url 'invite_user' %}">Users</a>
       <a href="{% url 'profile' %}">Settings</a>
     </nav>
-    <small>Open Source Industrial IoT</small>
+    <small>Industrial IoT Operations</small>
   </aside>
   <main class="shell">
     <header class="topbar">

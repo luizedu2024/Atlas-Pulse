@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Overview</h1>
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Live operations</p>
+    <h1>Overview</h1>
+  </div>
+  <span class="heading-pill">Atlas Pulse</span>
+</section>
 <section class="metrics">
   <article><strong>{{ devices_online }}</strong><span>Devices Online</span></article>
   <article><strong>{{ devices_offline }}</strong><span>Devices Offline</span></article>

@@ -9,10 +9,9 @@
 </head>
 <body class="auth-page">
   <section class="auth-art">
-    <div class="pulse-grid"></div>
-    <h1>ATLAS PULSE</h1>
+    <img class="auth-logo" src="{% static 'img/atlas-pulse-logo.png' %}" alt="Atlas Pulse">
     <p>Industrial IoT Platform</p>
-    <span>From Edge to Insight.</span>
+    <span>Conectar. Monitorar. Automatizar. Decidir melhor.</span>
   </section>
   <main class="auth-card">
     {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
