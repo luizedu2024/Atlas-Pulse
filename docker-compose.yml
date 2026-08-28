@@ -1,0 +1,49 @@
+services:
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py seed_demo && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    env_file: .env.example
+    depends_on:
+      - postgres
+      - redis
+      - mosquitto
+    volumes:
+      - .:/app
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: atlas_pulse
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  celery:
+    build: .
+    command: celery -A atlas_pulse worker -l info
+    env_file: .env.example
+    depends_on:
+      - redis
+      - postgres
+  celery-beat:
+    build: .
+    command: celery -A atlas_pulse beat -l info
+    env_file: .env.example
+    depends_on:
+      - redis
+      - postgres
+volumes:
+  postgres_data:

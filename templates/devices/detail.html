@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="device-head"><h1>{{ device.name }}</h1><span class="pill {{ device.status }}">{{ device.status|upper }}</span><span>{{ device.protocol }}</span><span>Last seen {{ device.last_seen|timesince }} ago</span></div>
+<div class="tabs"><button>Overview</button><button>Telemetry</button><button>Alerts</button><button>Commands</button><button>Configuration</button><button>Logs</button></div>
+<div class="dashboard-grid">
+  <section class="panel"><h2>Device Information</h2><p>{{ device.description|default:"No description." }}</p><div class="row"><span>Type</span><strong>{{ device.device_type }}</strong></div><div class="row"><span>Firmware</span><strong>{{ device.firmware_version|default:"-" }}</strong></div></section>
+  <section class="panel"><h2>Connection</h2><div class="row"><span>Gateway</span><strong>{{ device.gateway.name|default:"-" }}</strong></div><div class="row"><span>IP</span><strong>{{ device.ip_address|default:"-" }}</strong></div></section>
+  <section class="panel"><h2>Telemetry</h2>{% for point in telemetry|slice:":8" %}<div class="row"><span>{{ point.metric }}</span><strong>{{ point.value }} {{ point.unit }}</strong></div>{% empty %}<p>No telemetry yet.</p>{% endfor %}</section>
+  <section class="panel"><h2>Alerts</h2>{% for alert in alerts %}<div class="alert {{ alert.severity }}"><span>{{ alert.severity }}</span><p>{{ alert.message }}</p></div>{% empty %}<p>No alerts.</p>{% endfor %}</section>
+</div>
+{% endblock %}

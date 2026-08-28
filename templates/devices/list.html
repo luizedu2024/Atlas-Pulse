@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading"><h1>Devices</h1><button class="primary">+ Add Device</button></div>
+<form class="filters"><input name="q" placeholder="Search" value="{{ request.GET.q }}"><input name="status" placeholder="Status"><input name="protocol" placeholder="Protocol"><button>Filter</button></form>
+<section class="panel table-panel"><table><thead><tr><th>Device</th><th>Type</th><th>Status</th><th>Protocol</th><th>Gateway</th><th>Last Seen</th><th>Location</th></tr></thead><tbody>
+{% for device in devices %}
+<tr><td><a href="{% url 'device_detail' device.pk %}">{{ device.name }}</a></td><td>{{ device.device_type }}</td><td><span class="pill {{ device.status }}">{{ device.status }}</span></td><td>{{ device.protocol }}</td><td>{{ device.gateway.name|default:"-" }}</td><td>{{ device.last_seen|timesince }} ago</td><td>{{ device.location }}</td></tr>
+{% empty %}<tr><td colspan="7">No devices found.</td></tr>{% endfor %}
+</tbody></table></section>
+{% endblock %}
