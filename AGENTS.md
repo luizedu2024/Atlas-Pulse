@@ -15,16 +15,18 @@ modular Django monolith.
 
 ## Required Flow
 
-For meaningful product or backend changes:
+For meaningful product, frontend or backend changes:
 
 1. Delegate requirements analysis to the `analyst` agent.
 2. Delegate technical design to the `architect` agent.
-3. Delegate backend implementation to the `backend` agent.
-4. Delegate tests to the `qa` agent.
-5. Delegate final review to the `reviewer` agent.
-6. Delegate documentation updates to the `documenter` agent.
-7. Wait for all required agents.
-8. Consolidate the results in the main agent.
+3. Delegate frontend design decisions to the `webdesigner` agent when UI, UX,
+   templates, dashboards, styling or frontend flows are affected.
+4. Delegate backend implementation to the `backend` agent.
+5. Delegate tests to the `qa` agent.
+6. Delegate final review to the `reviewer` agent.
+7. Delegate documentation updates to the `documenter` agent.
+8. Wait for all required agents.
+9. Consolidate the results in the main agent.
 
 ## Rules
 
@@ -49,6 +51,7 @@ For meaningful product or backend changes:
 - `api`: REST serializers, views, permissions and versioned API URLs.
 - `audit`: audit trail for security-sensitive and autonomous actions.
 - `core`: landing pages, dashboard views and shared domain services.
+- `templates`, `static`: server-rendered UI, CSS, JavaScript and frontend assets.
 
 ## Security Defaults
 
