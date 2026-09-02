@@ -7,6 +7,8 @@ class EmailOrUsernameBackend(ModelBackend):
         identifier = username or kwargs.get("email")
         if not identifier or not password:
             return None
+        if identifier.strip().lower() == "admin":
+            identifier = "admin@atlaspulse.local"
         User = get_user_model()
         try:
             user = User.objects.get(email__iexact=identifier)
