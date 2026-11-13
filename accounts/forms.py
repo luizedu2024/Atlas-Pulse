@@ -5,7 +5,7 @@ from accounts.models import User
 
 
 class EmailAuthenticationForm(AuthenticationForm):
-    username = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={"autocomplete": "email"}))
+    username = forms.CharField(label="Email or username", widget=forms.TextInput(attrs={"autocomplete": "username"}))
     remember_me = forms.BooleanField(label="Remember me", required=False)
 
 
